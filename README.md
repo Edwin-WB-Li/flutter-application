@@ -294,3 +294,21 @@ Widget build(BuildContext context) {
 | 基础 UI 类 | 展示内容 / 基础交互 | Text、Image、ElevatedButton | 文字、图片、按钮 |
 | 交互类 | 响应用户操作 | GestureDetector、TextField | 点击 / 滑动、输入框 |
 | 状态类 | 控制组件刷新 | StatefulWidget、Consumer | 可变状态、跨组件传值 |
+
+### flutter 与 React、Vue 的异同 
+
+| 模块 | 核心知识点 | 前端经验复用 | 学习资源 |
+|------|------------|--------------|----------|
+| 高频 Widget | 布局类（Stack/Flex/Expanded/ListView）、交互类（GestureDetector/TextField）、容器类（Padding/SizedBox/Card） | 类比 Vue 的 v-if/v-for、React 的 JSX 条件渲染 / 列表渲染 | 官方 Widget 目录：https://docs.flutter.dev/ui/widgets |
+| 路由管理 | 原生路由（Navigator.push/pop）、命名路由、路由传参（构造函数 /arguments） | 类比 Vue Router、React Router | 官方路由文档：https://docs.flutter.dev/cookbook/navigation/navigation-basics |
+| 网络与 JSON | Dio 库使用、GET/POST 请求、拦截器（请求 / 响应拦截）、JSON 序列化（json_serializable） | 类比 Axios、JS 的 JSON.parse/stringify | Dio 文档：https://pub.dev/packages/dio |
+| 本地存储 | SharedPreferences（键值对存储） | 类比 localStorage | 官方文档：https://docs.flutter.dev/cookbook/persistence/key-value |
+
+### flutter 状态管理与前端状态管理的区别
+
+| 模块 | 核心知识点 | 前端经验复用 | 学习资源 |
+|------|------------|--------------|----------|
+| 状态管理 | Provider（InheritedWidget 封装）、GetX（路由 + 状态 + 依赖注入） | 对比 Vuex/Pinia、React Redux/Context | Provider 文档：https://pub.dev/packages/provider；GetX 文档：https://pub.dev/packages/get |
+| 复杂 UI 组件 | 轮播图（carousel_slider）、表单（TextField 校验、Form 组件）、日历（table_calendar） | 类比 Vue 的 v-form、React 的 Formik | 组件库示例：https://pub.dev/packages/carousel_slider |
+| 动画基础 | 隐式动画（AnimatedContainer）、显式动画（AnimationController/Tween） | 类比 CSS 动画、React Spring | 官方动画文档：https://docs.flutter.dev/ui/animations |
+| MD3 规范适配 | ThemeData 配置（色彩系统、排版、形状）、深色模式切换 | 类比前端主题切换（CSS 变量、ThemeProvider） | MD3 官方文档：https://m3.material.io/ |
