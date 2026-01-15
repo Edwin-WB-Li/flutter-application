@@ -9,6 +9,8 @@ import 'pages/demo/nav_demo.dart';
 import 'pages/demo/todo_demo.dart';
 import 'pages/demo/home_screen_demo.dart';
 import 'pages/demo/home_demo.dart';
+import 'pages/demo/intl_phone_field.dart';
+import 'pages/demo/dio.demo.dart';
 
 void main() {
   runApp(MyApp());
@@ -76,28 +78,25 @@ class _MyHomePageState extends State<MyHomePage> {
         page = Placeholder();
         break;
       case 2:
-        page = AboutPage();
-        break;
-      case 3:
         page = ColorsDemo();
         break;
-      case 4:
+      case 3:
         page = CardsDemo();
         break;
-      case 5:
+      case 4:
         page = GridListDemo(type: GridListDemoType.footer);
         break;
-      case 6:
+      case 5:
         page = BottomNavigationDemo(
           type: BottomNavigationDemoType.withLabels,
           restorationId: 'bottom_navigation_labels_demo',
         );
         break;
 
-      case 7:
+      case 6:
         page = NavDemo();
         break;
-      case 8:
+      case 7:
         page = TodosScreen(
             todos: List.generate(
           20,
@@ -107,11 +106,17 @@ class _MyHomePageState extends State<MyHomePage> {
           ),
         ));
         break;
-      case 9:
+      case 8:
         page = HomeScreen();
         break;
-      case 10:
+      case 9:
         page = HomeDemo();
+        break;
+      case 10:
+        page = IntlPhoneFieldApp();
+        break;
+      case 11:
+        page = DioDemo();
         break;
       default:
         throw UnimplementedError('no widget for $selectedIndex');
@@ -133,10 +138,6 @@ class _MyHomePageState extends State<MyHomePage> {
                   NavigationRailDestination(
                     icon: Icon(Icons.favorite),
                     label: Text('Favorites'),
-                  ),
-                  NavigationRailDestination(
-                    icon: Icon(Icons.admin_panel_settings),
-                    label: Text('About'),
                   ),
                   NavigationRailDestination(
                     icon: Icon(Icons.color_lens),
@@ -169,6 +170,14 @@ class _MyHomePageState extends State<MyHomePage> {
                   NavigationRailDestination(
                     icon: Icon(Icons.home),
                     label: Text('HomeDemo'),
+                  ),
+                  NavigationRailDestination(
+                    icon: Icon(Icons.home),
+                    label: Text('IntlPhoneFieldApp'),
+                  ),
+                  NavigationRailDestination(
+                    icon: Icon(Icons.network_check),
+                    label: Text('Dio'),
                   ),
                 ],
                 selectedIndex: selectedIndex, // 当前选中项
@@ -264,30 +273,6 @@ class BigCard extends StatelessWidget {
           semanticsLabel: "${pair.first} ${pair.second}",
         ),
       ),
-    );
-  }
-}
-
-class AboutPage extends StatelessWidget {
-  // final TextEditingController _controller = TextEditingController();
-  @override
-  Widget build(BuildContext context) {
-    // return TextField(
-    //   controller: _controller,
-    //   decoration: const InputDecoration(
-    //     border: OutlineInputBorder(),
-    //     labelText: 'Mascot Name',
-    //   ),
-    // );
-    return Row(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        Icon(Icons.star, color: Colors.green[500]),
-        Icon(Icons.star, color: Colors.green[500]),
-        Icon(Icons.star, color: Colors.green[500]),
-        const Icon(Icons.star, color: Colors.black),
-        const Icon(Icons.star, color: Colors.black),
-      ],
     );
   }
 }
