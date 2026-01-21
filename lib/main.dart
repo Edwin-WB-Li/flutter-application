@@ -11,6 +11,7 @@ import 'pages/demo/home_screen_demo.dart';
 import 'pages/demo/home_demo.dart';
 import 'pages/demo/intl_phone_field.dart';
 import 'pages/demo/dio.demo.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 
 void main() {
   runApp(MyApp());
@@ -32,6 +33,7 @@ class MyApp extends StatelessWidget {
           colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepOrange),
         ),
         home: MyHomePage(), // 设置主页
+        builder: EasyLoading.init(),
       ),
     );
   }
@@ -240,6 +242,13 @@ class GeneratorPage extends StatelessWidget {
                   appState.getNext();
                 },
                 child: Text('Next'),
+              ),
+              SizedBox(width: 10),
+              ElevatedButton(
+                onPressed: () {
+                  EasyLoading.show(status: 'loading...');
+                },
+                child: Text('Loading'),
               ),
             ],
           ),

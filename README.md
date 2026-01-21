@@ -90,8 +90,6 @@ Dart 核心特性：
 
 ### [Flutter 与 Vue、React 的区别](https://www.doubao.com/chat/31624762199670018)
 
-- Flutter 推荐用 ListView.builder（懒加载，性能优）替代前端的 map 循环；需显式指定`itemCount`和`itemBuilder`，无 “v-for” 指令
-
 - https://www.doubao.com/chat/31624762199670018
 
 - 基础组件（如 Text / Container / Row / Column）
@@ -100,7 +98,9 @@ Dart 核心特性：
 
   - 如果一个 Widget 会变化（例如由于用户交互），它是有状态的。然而，如果一个 Widget 响应变化，它的父 Widget 只要本身不响应变化，就依然是无状态的
 
-- 布局系统：基于 Widget 嵌套的布局（如 Stack/Expanded/MediaQuery）和传统前端的 CSS 布局逻辑不同，需要适应 “约束向下传递，尺寸向上反馈” 的机制；
+- 布局系统：
+
+基于 Widget 嵌套的布局（如 Stack/Expanded/MediaQuery）和传统前端的 CSS 布局逻辑不同，需要适应 “约束向下传递，尺寸向上反馈” 的机制；
 
 - 状态管理：简单场景用 setState 即可，但复杂应用需要学习 Provider/Bloc/GetX 等方案，理解 “状态分离” 的思想需要时间
 
@@ -134,7 +134,7 @@ Dart 核心特性：
 
 - Flutter 无 “模板指令”，直接用 Dart 的三元运算符或专用 Widget（Visibility/If）实现条件渲染；前端支持&&短路渲染，Flutter 需用三元或 if 块（集合内）
 
-- Flutter 推荐用 ListView.builder（懒加载，性能优化）替代前端的 map 循环；需显式指定 itemCount 和 itemBuilder，无 “v-for” 指令
+- Flutter 推荐用 `ListView.builder`（懒加载，性能优）替代前端的 map 循环；需显式指定`itemCount`和`itemBuilder`
 
 - Flutter 的组件内状态必须放在 State 类中，通过 setState 触发重建
 
