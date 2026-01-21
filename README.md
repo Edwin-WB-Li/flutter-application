@@ -671,3 +671,11 @@ Widget build(BuildContext context) {  // 构建UI界面
 - **维护性**：避免因拼写错误导致创建了新方法而非重写现有方法
 
 所以 `@override` 不仅限于 `StatefulWidget`，在任何继承关系中重写方法时都应使用。
+
+### Flutter 生命周期方法
+
+- initState：State 对象插入到树中时调用，只调用一次。用于初始化状态、订阅数据流、添加监听器等。
+
+- build：构建 UI 界面的方法，每次调用 setState 后都会重新调用。返回一个 Widget 树。
+
+- dispose：State 对象从树中移除时调用。用于释放资源、取消订阅、移除监听器等。
