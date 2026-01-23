@@ -203,6 +203,16 @@ GestureDetector(
 
 - ListTile 将最多三行的文本、可选的导语以及后面的图标组织在一行中。
 
+- EdgeInsets 是 Flutter 中用于设置**内边距（Padding）和外边距（Margin）**的类
+
+  - EdgeInsets.zero - 所有方向边距为 0
+  
+  - EdgeInsets.all(10.0) - 所有方向边距都为 10
+
+  - EdgeInsets.symmetric(horizontal: 10.w, vertical: 8.h) - 水平/垂直方向对称边距
+
+  - EdgeInsets.only(left: 10.w, right: 10.w) - 只设置指定方向边距
+
 ### 建造模式
 
 - ListView.builder 用于懒惰渲染列表中的项目
@@ -568,6 +578,28 @@ class DetailPage extends StatelessWidget {
   - 不要在 initState 中依赖 InheritedWidget（如 Theme.of / Provider.of(context) 等），这类依赖应放到 didChangeDependencies 中处理。
   
   - 对应的清理工作应在 dispose() 中完成（取消订阅、释放控制器等）
+
+### 指定环境变量
+
+```bash
+# 方案1：命令行传参（推荐）
+flutter run -d chrome --dart-define=ENV=dev  # Web端
+flutter run -d android --dart-define=ENV=dev # Android端
+
+# 方案2：如果用了List<String> args传参
+flutter run -d chrome dev
+```
+
+```bash
+# Web端打包（生产环境）
+flutter build web --dart-define=ENV=prod
+
+# Android打包（生产环境）
+flutter build apk --release --dart-define=ENV=prod
+
+# iOS打包（生产环境）
+flutter build ipa --release --dart-define=ENV=prod
+```
 
 ### 常用的第三方库
 

@@ -83,7 +83,7 @@ class HomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ListView(
-      padding: EdgeInsets.zero,
+      padding: EdgeInsets.zero, // 设置 ListView 内边距为 0
       children: [
         // 1. 顶部搜索栏（京东风格）
         Container(

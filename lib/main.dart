@@ -1,11 +1,21 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 import 'router.dart';
 
-void main() {
+void main() async {
+  // 必须添加：初始化Flutter绑定（异步操作前必备）
+  WidgetsFlutterBinding.ensureInitialized();
+
+  // 加载.env文件（指定asset路径，兼容Web）
+  await dotenv.load(
+    fileName: ".env",
+  );
   runApp(MyApp());
 }
+
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
@@ -19,6 +29,10 @@ class MyApp extends StatelessWidget {
           title: 'Flutter 京东仿站',
           theme: ThemeData(primarySwatch: Colors.red), // 京东红主题
           routerConfig: router,
+          builder: (context, child) {
+            // 调用 EasyLoading.init() 并传递 child（路由页面内容）
+            return EasyLoading.init()(context, child);
+          },
         );
       },
     );
