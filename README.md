@@ -203,6 +203,16 @@ GestureDetector(
 
 - ListTile 将最多三行的文本、可选的导语以及后面的图标组织在一行中。
 
+- EdgeInsets 是 Flutter 中用于设置**内边距（Padding）和外边距（Margin）**的类
+
+  - EdgeInsets.zero - 所有方向边距为 0
+  
+  - EdgeInsets.all(10.0) - 所有方向边距都为 10
+
+  - EdgeInsets.symmetric(horizontal: 10.w, vertical: 8.h) - 水平/垂直方向对称边距
+
+  - EdgeInsets.only(left: 10.w, right: 10.w) - 只设置指定方向边距
+
 ### 建造模式
 
 - ListView.builder 用于懒惰渲染列表中的项目
@@ -505,6 +515,32 @@ class DetailPage extends StatelessWidget {
 
   - 学习优先级：先掌握 setState 理解核心逻辑 → 再学 Provider 掌握共享思路 → 最后根据场景选 Riverpod/Bloc/GetX 深入其一即可
 
+### Provider 的核心原理？
+
+- 基于InheritedWidget实现数据共享；
+
+  - ChangeNotifier：维护状态，状态变化时调用notifyListeners；
+
+  - ChangeNotifierProvider：将 ChangeNotifier 注入 Widget 树；
+
+  - Consumer/Selector：监听数据变化，仅在数据改变时重建 UI（Selector 可筛选需要监听的字段，减少重建）。
+
+- Bloc 的核心概念（Event/State/Bloc）？
+
+  - Event：用户行为（如点击按钮、请求数据）；
+
+  - State：UI 状态（如加载中、加载成功、加载失败）；
+
+  - Bloc：接收 Event，处理业务逻辑，输出新 State；
+
+  - 核心流程：UI 触发 Event -> Bloc 处理 Event -> Bloc 发送新 State -> UI 监听 State 刷新。
+
+### 全局状态 vs 局部状态如何选择？
+
+- 局部状态：仅当前 Widget / 页面使用（如按钮是否选中、输入框内容），用setState；
+
+- 全局状态：多页面 / 组件共享（如用户信息、主题、语言），用 Provider/Bloc/GetX 等
+
 ### flutter 数据获取（推荐使用dio）
 
 - 网络数据获取（最核心，对接后端接口）
@@ -542,6 +578,28 @@ class DetailPage extends StatelessWidget {
   - 不要在 initState 中依赖 InheritedWidget（如 Theme.of / Provider.of(context) 等），这类依赖应放到 didChangeDependencies 中处理。
   
   - 对应的清理工作应在 dispose() 中完成（取消订阅、释放控制器等）
+
+### 指定环境变量
+
+```bash
+# 方案1：命令行传参（推荐）
+flutter run -d chrome --dart-define=ENV=dev  # Web端
+flutter run -d android --dart-define=ENV=dev # Android端
+
+# 方案2：如果用了List<String> args传参
+flutter run -d chrome dev
+```
+
+```bash
+# Web端打包（生产环境）
+flutter build web --dart-define=ENV=prod
+
+# Android打包（生产环境）
+flutter build apk --release --dart-define=ENV=prod
+
+# iOS打包（生产环境）
+flutter build ipa --release --dart-define=ENV=prod
+```
 
 ### 常用的第三方库
 
@@ -602,6 +660,7 @@ class DetailPage extends StatelessWidget {
 | path_provider | 获取本地路径 | 获取应用文档目录、缓存目录、临时目录，用于本地文件存储 |
 | encrypt | 数据加密 | 支持 AES、RSA、MD5 等加密算法，适合敏感数据（如密码、Token）加密 |
 | package_info_plus | 获取应用信息 | 获取应用版本号、包名、构建号，用于版本更新、关于页面等场景 |
+| carousel_slider | 轮播图 | 用于轮播图 |
 
 - 可视化 / 图表类（数据展示）
 
