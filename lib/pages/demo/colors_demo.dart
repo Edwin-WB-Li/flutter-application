@@ -226,9 +226,7 @@ class ColorsDemo extends StatelessWidget {
           ),
         ),
         body: TabBarView(
-          children: [
-            for (final palette in palettes) _PaletteTabView(colors: palette)
-          ],
+          children: [for (final palette in palettes) _PaletteTabView(colors: palette)],
         ),
       ),
     );

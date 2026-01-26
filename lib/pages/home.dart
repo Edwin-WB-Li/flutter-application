@@ -3,10 +3,17 @@ import 'package:carousel_slider/carousel_slider.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:go_router/go_router.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:pull_to_refresh/pull_to_refresh.dart';
+import 'package:flutter/cupertino.dart';
 
-class HomePage extends StatelessWidget {
+class HomePage extends StatefulWidget {
   const HomePage({super.key});
 
+  @override
+  State<HomePage> createState() => _HomePageState();
+}
+
+class _HomePageState extends State<HomePage> {
   // 轮播图数据（模拟）
   static List<String> _bannerImages = [
     'https://images.unsplash.com/photo-1434394354979-a235cd36269d?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=2902&q=80',
@@ -80,132 +87,173 @@ class HomePage extends StatelessWidget {
     },
   ];
 
+  static List<String> items = ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10"];
+
+  RefreshController _refreshController = RefreshController(initialRefresh: false);
+
+  @override
+  void dispose() {
+    _refreshController.dispose();
+    super.dispose();
+  }
+
+  void _onRefresh() async {
+    // monitor network fetch
+    await Future.delayed(Duration(milliseconds: 1000));
+    // if failed,use refreshFailed()
+    _refreshController.refreshCompleted();
+  }
+
+  void _onLoading() async {
+    // monitor network fetch
+    await Future.delayed(Duration(milliseconds: 1000));
+    // if failed,use loadFailed(),if no data return,use LoadNodata()
+    items.add((items.length + 1).toString());
+    // if (mounted) setState(() {});
+    _refreshController.loadComplete();
+  }
+
   @override
   Widget build(BuildContext context) {
-    return ListView(
-      padding: EdgeInsets.zero, // 设置 ListView 内边距为 0
-      children: [
-        // 1. 顶部搜索栏（京东风格）
-        Container(
-          padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 8.h),
-          color: Colors.red,
-          child: Row(
-            children: [
-              Expanded(
-                child: Container(
-                  height: 36.h,
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(18.r),
-                  ),
-                  child: const TextField(
-                    decoration: InputDecoration(
-                      hintText: '京东秒杀 百亿补贴',
-                      prefixIcon: Icon(Icons.search, color: Colors.grey),
-                      border: InputBorder.none,
+    return Scaffold(
+        body: SmartRefresher(
+      enablePullDown: true,
+      enablePullUp: true,
+      header: ClassicHeader(),
+      footer: CustomFooter(
+        builder: (BuildContext context, LoadStatus? mode) {
+          Widget body;
+          if (mode == LoadStatus.idle) {
+            body = Text("上拉加载");
+          } else if (mode == LoadStatus.loading) {
+            body = CupertinoActivityIndicator();
+          } else if (mode == LoadStatus.failed) {
+            body = Text("加载失败！点击重试！");
+          } else if (mode == LoadStatus.canLoading) {
+            body = Text("松手,加载更多!");
+          } else {
+            body = Text("没有更多数据了!");
+          }
+          return SizedBox(
+            height: 55.0,
+            child: Center(child: body),
+          );
+        },
+      ),
+      controller: _refreshController,
+      onRefresh: _onRefresh,
+      onLoading: _onLoading,
+      child: ListView(
+        padding: EdgeInsets.zero, // 设置 ListView 内边距为 0
+        children: [
+          // 1. 顶部搜索栏（京东风格）
+          Container(
+            padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 8.h),
+            color: Colors.red,
+            child: Row(
+              children: [
+                Expanded(
+                  child: Container(
+                    height: 36.h,
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(18.r),
+                    ),
+                    child: const TextField(
+                      decoration: InputDecoration(
+                        hintText: '京东秒杀 百亿补贴',
+                        prefixIcon: Icon(Icons.search, color: Colors.grey),
+                        border: InputBorder.none,
+                      ),
                     ),
                   ),
                 ),
-              ),
-              SizedBox(width: 10.w),
-              const Icon(Icons.qr_code, color: Colors.white),
-            ],
-          ),
-        ),
-
-        // 2. 轮播图
-        CarouselSlider(
-          options: CarouselOptions(
-            height: 150.h,
-            autoPlay: true,
-            viewportFraction: 1.0, // 全屏轮播
-          ),
-          items: _bannerImages.map((img) {
-            return CachedNetworkImage(
-              imageUrl: img,
-              fit: BoxFit.cover,
-              width: double.infinity,
-            );
-          }).toList(),
-        ),
-
-        // 3. 分类入口（8宫格）
-        GridView.count(
-          shrinkWrap: true, // 自适应高度（必须！否则ListView会冲突）
-          physics: const NeverScrollableScrollPhysics(), // 禁止网格滚动
-          crossAxisCount: 4, // 4列
-          padding: EdgeInsets.symmetric(vertical: 10.h),
-          children: _categoryList.map((item) {
-            return Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                CachedNetworkImage(
-                    imageUrl: item['icon']!, width: 40.w, height: 40.h),
-                SizedBox(height: 5.h),
-                Text(item['name']!, style: TextStyle(fontSize: 12.sp)),
+                SizedBox(width: 10.w),
+                const Icon(Icons.qr_code, color: Colors.white),
               ],
-            );
-          }).toList(),
-        ),
-
-        // 4. 商品列表（京东风格）
-        Padding(
-          padding: EdgeInsets.symmetric(horizontal: 10.w),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text('爆款推荐',
-                  style:
-                      TextStyle(fontSize: 16.sp, fontWeight: FontWeight.bold)),
-              SizedBox(height: 10.h),
-              ..._goodsList.map((goods) {
-                return GestureDetector(
-                  // 跳转到商品详情页（go_router 跳转）
-                  onTap: () => context
-                      .go('/goods/${goods['name']!.replaceAll(' ', '_')}'),
-                  child: Container(
-                    margin: EdgeInsets.only(bottom: 10.h),
-                    padding: EdgeInsets.all(10.w),
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(8.r),
-                      boxShadow: [
-                        BoxShadow(color: Colors.grey.shade200, blurRadius: 2)
-                      ],
-                    ),
-                    child: Row(
-                      children: [
-                        CachedNetworkImage(
-                            imageUrl: goods['img']!,
-                            width: 100.w,
-                            height: 100.w),
-                        SizedBox(width: 10.w),
-                        Expanded(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(goods['name']!,
-                                  style: TextStyle(fontSize: 14.sp),
-                                  maxLines: 2,
-                                  overflow: TextOverflow.ellipsis),
-                              SizedBox(height: 10.h),
-                              Text('¥${goods['price']}',
-                                  style: TextStyle(
-                                      fontSize: 16.sp,
-                                      color: Colors.red,
-                                      fontWeight: FontWeight.bold)),
-                            ],
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                );
-              }).toList(),
-            ],
+            ),
           ),
-        ),
-      ],
-    );
+
+          // 2. 轮播图
+          CarouselSlider(
+            options: CarouselOptions(
+              height: 150.h,
+              autoPlay: true,
+              viewportFraction: 1.0, // 全屏轮播
+            ),
+            items: _bannerImages.map((img) {
+              return CachedNetworkImage(
+                imageUrl: img,
+                fit: BoxFit.cover,
+                width: double.infinity,
+              );
+            }).toList(),
+          ),
+
+          // 3. 分类入口（8宫格）
+          GridView.count(
+            shrinkWrap: true, // 自适应高度（必须！否则ListView会冲突）
+            physics: const NeverScrollableScrollPhysics(), // 禁止网格滚动
+            crossAxisCount: 4, // 4列
+            padding: EdgeInsets.symmetric(vertical: 10.h),
+            children: _categoryList.map((item) {
+              return Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  CachedNetworkImage(imageUrl: item['icon']!, width: 40.w, height: 40.h),
+                  SizedBox(height: 5.h),
+                  Text(item['name']!, style: TextStyle(fontSize: 12.sp)),
+                ],
+              );
+            }).toList(),
+          ),
+
+          // 4. 商品列表（京东风格）
+          Padding(
+            padding: EdgeInsets.symmetric(horizontal: 10.w),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text('爆款推荐', style: TextStyle(fontSize: 16.sp, fontWeight: FontWeight.bold)),
+                SizedBox(height: 10.h),
+                ..._goodsList.map((goods) {
+                  return GestureDetector(
+                    // 跳转到商品详情页（go_router 跳转）
+                    onTap: () => context.go('/goods/${goods['name']!.replaceAll(' ', '_')}'),
+                    child: Container(
+                      margin: EdgeInsets.only(bottom: 10.h),
+                      padding: EdgeInsets.all(10.w),
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(8.r),
+                        boxShadow: [BoxShadow(color: Colors.grey.shade200, blurRadius: 2)],
+                      ),
+                      child: Row(
+                        children: [
+                          CachedNetworkImage(imageUrl: goods['img']!, width: 100.w, height: 100.w),
+                          SizedBox(width: 10.w),
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(goods['name']!,
+                                    style: TextStyle(fontSize: 14.sp), maxLines: 2, overflow: TextOverflow.ellipsis),
+                                SizedBox(height: 10.h),
+                                Text('¥${goods['price']}',
+                                    style: TextStyle(fontSize: 16.sp, color: Colors.red, fontWeight: FontWeight.bold)),
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  );
+                }).toList(),
+              ],
+            ),
+          ),
+        ],
+      ),
+    ));
   }
 }

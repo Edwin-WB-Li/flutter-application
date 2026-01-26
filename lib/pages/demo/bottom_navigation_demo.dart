@@ -19,8 +19,7 @@ class BottomNavigationDemo extends StatefulWidget {
   State<BottomNavigationDemo> createState() => _BottomNavigationDemoState();
 }
 
-class _BottomNavigationDemoState extends State<BottomNavigationDemo>
-    with RestorationMixin {
+class _BottomNavigationDemoState extends State<BottomNavigationDemo> with RestorationMixin {
   final RestorableInt _currentIndex = RestorableInt(0);
 
   @override
@@ -67,9 +66,7 @@ class _BottomNavigationDemoState extends State<BottomNavigationDemo>
         0,
         bottomNavigationBarItems.length - 2,
       );
-      _currentIndex.value = _currentIndex.value
-          .clamp(0, bottomNavigationBarItems.length - 1)
-          .toInt();
+      _currentIndex.value = _currentIndex.value.clamp(0, bottomNavigationBarItems.length - 1).toInt();
     }
 
     return MaterialApp(
@@ -98,8 +95,7 @@ class _BottomNavigationDemoState extends State<BottomNavigationDemo>
           ),
         ),
         bottomNavigationBar: BottomNavigationBar(
-          showUnselectedLabels:
-              widget.type == BottomNavigationDemoType.withLabels,
+          showUnselectedLabels: widget.type == BottomNavigationDemoType.withLabels,
           items: bottomNavigationBarItems,
           currentIndex: _currentIndex.value,
           type: BottomNavigationBarType.fixed,

@@ -26,6 +26,8 @@ dependencies:
   cookie_jar: ^4.0.8
   dio_cookie_manager: ^3.3.0
   shared_preferences: ^2.5.4
+  logger: ^2.6.2
+  pull_to_refresh: ^2.0.0
 
 dev_dependencies:
   flutter_test:

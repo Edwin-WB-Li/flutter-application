@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 
-
 // 商品详情页（跳转页面）
 class GoodsDetailPage extends StatelessWidget {
   final String goodsId;
