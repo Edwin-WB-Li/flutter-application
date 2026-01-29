@@ -15,14 +15,14 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   // 轮播图数据（模拟）
-  static List<String> _bannerImages = [
+  List<String> _bannerImages = [
     'https://images.unsplash.com/photo-1434394354979-a235cd36269d?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=2902&q=80',
     'https://images.unsplash.com/photo-1463288889890-a56b2853c40f?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=3132&q=80',
     'https://images.unsplash.com/photo-1454496522488-7a8e488e8606?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=2952&q=80',
   ];
 
   // 分类入口数据（模拟）
-  static List<Map<String, String>> _categoryList = [
+  List<Map<String, String>> _categoryList = [
     {
       'icon':
           'https://images.unsplash.com/photo-1434394354979-a235cd36269d?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=2902&q=80',
@@ -66,7 +66,7 @@ class _HomePageState extends State<HomePage> {
   ];
 
   // 商品列表数据（模拟）
-  static List<Map<String, String>> _goodsList = [
+  List<Map<String, String>> _goodsList = [
     {
       'img':
           'https://images.unsplash.com/photo-1454496522488-7a8e488e8606?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=2952&q=80',
@@ -87,7 +87,7 @@ class _HomePageState extends State<HomePage> {
     },
   ];
 
-  static List<String> items = ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10"];
+  // List<String> items = ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10"];
 
   RefreshController _refreshController = RefreshController(initialRefresh: false);
 
@@ -108,8 +108,17 @@ class _HomePageState extends State<HomePage> {
     // monitor network fetch
     await Future.delayed(Duration(milliseconds: 1000));
     // if failed,use loadFailed(),if no data return,use LoadNodata()
-    items.add((items.length + 1).toString());
-    // if (mounted) setState(() {});
+    // 触发UI更新
+    setState(() {
+      _goodsList.add(
+        {
+          'img':
+              'https://images.unsplash.com/photo-1463288889890-a56b2853c40f?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=3132&q=80',
+          'name': '小米 15 Ultra 16+1T',
+          'price': '5999'
+        },
+      );
+    });
     _refreshController.loadComplete();
   }
 
@@ -252,6 +261,16 @@ class _HomePageState extends State<HomePage> {
               ],
             ),
           ),
+
+          // ListView.builder(
+          //   shrinkWrap: true,
+          //   physics: const NeverScrollableScrollPhysics(),
+          //   itemExtent: 100.0,
+          //   itemCount: items.length,
+          //   itemBuilder: (context, index) {
+          //     return Card(child: Center(child: Text(items[index])));
+          //   },
+          // ),
         ],
       ),
     ));

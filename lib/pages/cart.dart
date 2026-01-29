@@ -2,28 +2,35 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 
-List<String> items = ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10"];
-RefreshController _refreshController = RefreshController(initialRefresh: false);
+class CartPage extends StatefulWidget {
+  const CartPage({super.key});
 
-void _onRefresh() async {
-  // monitor network fetch
-  await Future.delayed(Duration(milliseconds: 1000));
-  // if failed,use refreshFailed()
-  _refreshController.refreshCompleted();
-}
-
-void _onLoading() async {
-  // monitor network fetch
-  await Future.delayed(Duration(milliseconds: 1000));
-  // if failed,use loadFailed(),if no data return,use LoadNodata()
-  items.add((items.length + 1).toString());
-  // if (mounted) setState(() {});
-  _refreshController.loadComplete();
+  @override
+  State<CartPage> createState() => _CartPageState();
 }
 
 // 购物车页面（基础布局）
-class CartPage extends StatelessWidget {
-  const CartPage({super.key});
+class _CartPageState extends State<CartPage> {
+  List<String> items = ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10"];
+  RefreshController _refreshController = RefreshController(initialRefresh: false);
+
+  void _onRefresh() async {
+    // monitor network fetch
+    await Future.delayed(Duration(milliseconds: 1000));
+    // if failed,use refreshFailed()
+    _refreshController.refreshCompleted();
+  }
+
+  void _onLoading() async {
+    // monitor network fetch
+    await Future.delayed(Duration(milliseconds: 1000));
+    // if failed,use loadFailed(),if no data return,use LoadNodata()
+    setState(() {
+      // 触发 UI 更新
+      items.add((items.length + 1).toString());
+    });
+    _refreshController.loadComplete();
+  }
 
   @override
   Widget build(BuildContext context) {
