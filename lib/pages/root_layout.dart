@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
@@ -16,8 +15,7 @@ class _RootLayoutState extends State<RootLayout> {
   final List<BottomNavigationBarItem> _tabs = [
     const BottomNavigationBarItem(icon: Icon(Icons.home), label: '首页'),
     const BottomNavigationBarItem(icon: Icon(Icons.category), label: '分类'),
-    const BottomNavigationBarItem(
-        icon: Icon(Icons.shopping_cart), label: '购物车'),
+    const BottomNavigationBarItem(icon: Icon(Icons.shopping_cart), label: '购物车'),
     const BottomNavigationBarItem(icon: Icon(Icons.person), label: '我的'),
   ];
 

@@ -187,9 +187,7 @@ class SelectableTravelDestinationItem extends StatelessWidget {
                   child: Stack(
                     children: [
                       Container(
-                        color: isSelected
-                            ? colorScheme.primary.withValues(alpha: 0.08)
-                            : Colors.transparent,
+                        color: isSelected ? colorScheme.primary.withValues(alpha: 0.08) : Colors.transparent,
                       ),
                       Semantics(
                         label: '${destination.title}, $selectedStatus',
@@ -204,9 +202,7 @@ class SelectableTravelDestinationItem extends StatelessWidget {
                           padding: const EdgeInsets.all(8),
                           child: Icon(
                             Icons.check_circle,
-                            color: isSelected
-                                ? colorScheme.primary
-                                : Colors.transparent,
+                            color: isSelected ? colorScheme.primary : Colors.transparent,
                           ),
                         ),
                       ),

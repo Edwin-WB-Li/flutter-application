@@ -11,8 +11,7 @@ class HttpManager {
   static final HttpManager _instance = HttpManager._internal();
   factory HttpManager() => _instance;
   late Dio _dio;
-  static String baseUrl =
-      dotenv.env['API_BASE_URL'] ?? 'http://nest-api.weibin.xyz';
+  static String baseUrl = dotenv.env['API_BASE_URL'] ?? 'http://nest-api.weibin.xyz';
   // 私有构造方法 - 初始化Dio
   HttpManager._internal() {
     // 1. 初始化Dio基础配置
@@ -59,8 +58,7 @@ class HttpManager {
         // 响应拦截：请求成功后执行（统一解析数据、处理业务错误）
         onResponse: (Response response, ResponseInterceptorHandler handler) {
       // 统一解析响应数据（适配京东这类接口的通用格式：{code:200, message:"成功", data:{...}}）
-      Map<String, dynamic> resData =
-          response.data is String ? json.decode(response.data) : response.data;
+      Map<String, dynamic> resData = response.data is String ? json.decode(response.data) : response.data;
       int code = resData['code'] ?? 400;
       String message = resData['message'] ?? '请求失败';
       dynamic data = resData['data'];
@@ -109,10 +107,9 @@ class HttpManager {
   Future<void> _addTokenToHeader(RequestOptions options) async {
     try {
       final prefs = await SharedPreferences.getInstance();
-      String? token = prefs.getString('user_token');
+      String? token = prefs.getString('token');
       if (token != null && token.isNotEmpty) {
-        options.headers['Authorization'] =
-            'Bearer $token'; // JWT Token格式，可根据接口修改
+        options.headers['Authorization'] = 'Bearer $token'; // JWT Token格式，可根据接口修改
       }
     } catch (e) {
       // if (EnvUtils.isDev) print('【Token添加失败】$e');
@@ -147,8 +144,7 @@ class HttpManager {
           case 500:
             return AppException(code: 500, message: '服务器内部错误，请稍后重试');
           default:
-            return AppException(
-                code: statusCode, message: '请求失败，状态码：$statusCode');
+            return AppException(code: statusCode, message: '请求失败，状态码：$statusCode');
         }
       default:
         return AppException(code: 400, message: e.message ?? '网络请求失败，请稍后重试');

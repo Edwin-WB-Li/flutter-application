@@ -1,24 +1,32 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_easyloading/flutter_easyloading.dart';
+// import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_application/core/dio_client.dart';
 import 'package:flutter_application/core/dio_exception.dart';
+import 'package:logger/logger.dart';
+
+var logger = Logger(
+  printer: PrettyPrinter(),
+);
+
+var loggerNoStack = Logger(
+  printer: PrettyPrinter(methodCount: 0),
+);
 
 // 首页获取商品列表
 Future<void> getGoodsList() async {
   try {
     // 调用封装的 post方法，泛型指定返回数据类型（Map/List）
-    Map<dynamic, dynamic> goodsList =
-        await httpManager.post<Map>('/hitokoto/getHitokoto',
-            data: {
-              'page': 1,
-              'size': 10,
-            },
-            showLoading: true);
+    Map<dynamic, dynamic> goodsList = await httpManager.post<Map>('/hitokoto/getHitokoto',
+        data: {
+          'page': 1,
+          'size': 10,
+        },
+        showLoading: true);
     // // 处理数据（更新UI）
     // setState(() {
     //   _goodsList = goodsList.map((e) => GoodsModel.fromJson(e)).toList();
     // });
-    print(goodsList);
+    loggerNoStack.t(goodsList);
   } on AppException catch (e) {
     // 捕获自定义异常，可根据错误码做特殊处理
     print(e);
@@ -51,6 +59,14 @@ class _MinePageState extends State<MinePage> {
 
   @override
   Widget build(BuildContext context) {
+    logger.d('Log message with 2 methods');
+
+    loggerNoStack.i('Info message');
+
+    loggerNoStack.w('Just a warning!');
+
+    logger.e('Error! Something bad happened', error: 'Test Error');
+
     return const Center(child: Text('我的页面'));
   }
 }

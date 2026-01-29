@@ -1,4 +1,13 @@
-## Flutter
+---
+title: Flutter Basic Knowledge Points
+date: 2026-01-29
+description: Let's take a look at some basic knowledge points of Flutter together.
+image: https://images.pexels.com/photos/196644/pexels-photo-196644.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1
+alt: Flutter Basic Knowledge Points
+ogImage: https://images.pexels.com/photos/196644/pexels-photo-196644.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1
+tags: ['flutter', 'dart']
+published: true
+---
 
 ### Flutter 安装
 
@@ -170,6 +179,75 @@ GestureDetector(
 - Container 不是万能的：新手容易所有场景都用 Container，其实简单的边距用 Padding、固定大小用 SizedBox，性能更好
 
 ### 部件
+
+![widget](./assets/widget.png)
+
+### 基础显示 Widget
+
+这些是构成界面静态内容的基础。
+
+| Widget | 核心作用 | 常用属性 (类型) | 说明 |
+|--------|----------|----------------|------|
+| Text | 显示简单文本 | [data](file://d:\project\my-project\flutter\flutter_application\ios\Runner.xcworkspace\contents.xcworkspacedata)(String) | 要显示的文本 |
+| | | `style`(TextStyle) | 文本样式（颜色、字体、大小等） |
+| | | `textAlign`(TextAlign) | 文本对齐方式（如居中） |
+| | | `maxLines`(int) | 最大显示行数 |
+| Image | 显示图片 | `image`(ImageProvider) | 图片源，如 Image.asset（本地）或 Image.network（网络） |
+| | | `width`/ `height`(double) | 图片容器的宽高 |
+| | | `fit`(BoxFit) | 图片填充模式（如 BoxFit.cover拉伸裁剪以填满） |
+| Icon | 显示图标 | `icon`(IconData) | 具体图标，如 Icons.star |
+| | | `color`(Color) | 图标颜色 |
+| | | `size`(double) | 图标大小 |
+
+### 布局 Widget
+
+布局 Widget 负责安排其他 Widget 在屏幕上的位置，可分为单子布局和多子布局。
+
+### 单子布局 Widget
+
+常用于包裹一个子 Widget，提供约束或装饰。
+
+| Widget | 核心作用 | 常用属性 (类型) | 说明 |
+|--------|----------|----------------|------|
+| Container | 最常用的容器，可设置尺寸、背景、边距等，属性非常丰富 | `child`(Widget) | 容纳的子组件 |
+| | | `width`/ `height`(double) | 宽高 |
+| | | `padding`/ `margin`(EdgeInsetsGeometry) | 内边距/外边距 |
+| | | `decoration`(Decoration) | 装饰，如颜色(color)、边框(border)、圆角(borderRadius)、阴影(boxShadow)、渐变(gradient) |
+| Padding | 专用于设置内边距，比Container更专注 | `padding`(EdgeInsetsGeometry) | 内边距设置 |
+| | `child`(Widget) | 容纳的子组件 | |
+| Center | 将其子 Widget 居中显示 | `child`(Widget) | 容纳的子组件 |
+| | | `widthFactor`/ `heightFactor`(double?) | 宽高因子，null表示使用子组件原始尺寸 |
+
+#### 多子布局 Widget
+
+用于排列多个子 Widget。
+
+| Widget | 核心作用 | 常用属性 (类型) | 说明 |
+|--------|----------|----------------|------|
+| Row / Column | 在水平(Row)或垂直(Column)方向排列子组件 | `children`(List<Widget>) | 子组件列表 |
+| | | `mainAxisAlignment`(MainAxisAlignment) | 主轴（Row是横向，Column是纵向）对齐方式，如spaceEvenly（均匀分布） |
+| | | `crossAxisAlignment`(CrossAxisAlignment) | 交叉轴对齐方式，如CrossAxisAlignment.center（居中对齐） |
+| Stack | 层叠布局，子组件可以重叠 | `children`(List<Widget>) | 子组件列表，后面的孩子在上面 |
+| | | `fit`(StackFit) | 如 StackFit.expand 拉伸子组件以填充容器 |
+| | | `alignment`(AlignmentGeometry) | 子组件在 Stack 中的对齐方式 |
+| ListView | 可滚动的垂直列表布局 | `children`(List<Widget>) 或 `itemBuilder` | 列表项组件 |
+| | | `scrollDirection`(Axis) | 滚动方向，默认 Axis.vertical |
+| | | `physics`(ScrollPhysics) | 滚动效果，如 BouncingScrollPhysics |
+| GridView | 可滚动的网格布局 | `gridDelegate`(SliverGridDelegate) | 网格布局策略，如 SliverGridDelegateWithFixedCrossAxisCount |
+| | | `children`(List<Widget>) 或 `itemBuilder` | 网格项组件 |
+
+### 交互 Widget
+
+这些 Widget 可以响应用户操作
+
+| Widget | 核心作用 | 常用属性 (类型) | 说明 |
+|--------|----------|----------------|------|
+| ElevatedButton | 凸起按钮，用于主要操作 | `onPressed`(VoidCallback) | 按钮点击回调函数，设为 null 时按钮禁用 |
+| | | `child`(Widget) | 按钮内容，通常是 Text 或 Icon |
+| TextField | 文本输入框 | `controller`(TextEditingController) | 控制输入框的文本内容和监听变化 |
+| | | `decoration`(InputDecoration) | 装饰，如提示文字(hintText)、图标(prefixIcon) |
+| Checkbox / Switch | 复选框/开关 | `value`(bool) | 当前是否选中 |
+| | | `onChanged`(ValueChanged<bool>) | 状态改变时的回调 |
 
 - Center、Container、Padding 拥有 child 属性
 
