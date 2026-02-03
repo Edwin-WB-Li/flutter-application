@@ -139,13 +139,13 @@ class _CategoryPageState extends State<CategoryPage> {
         secondList: [
           CategorySecond(
             id: '201',
-            name: '笔记本',
+            name: '尿片',
             icon:
                 'https://images.unsplash.com/photo-1454496522488-7a8e488e8606?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=2952&q=80',
             goodsList: [
               CategoryGoods(
                   id: '2001',
-                  name: 'MacBook Pro 14寸',
+                  name: '纸尿片',
                   price: '12999',
                   img:
                       'https://images.unsplash.com/photo-1463288889890-a56b2853c40f?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=3132&q=80'),
@@ -402,7 +402,7 @@ class _CategoryPageState extends State<CategoryPage> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             // 二级分类宫格（京东风格：4列宫格，带图标+文字）
-            // _buildSecondCategoryGrid(),
+            _buildSecondCategoryGrid(),
             SizedBox(height: 20.h),
             // 分类下的推荐商品列表
             _buildCategoryGoodsList(),
@@ -426,47 +426,49 @@ class _CategoryPageState extends State<CategoryPage> {
       crossAxisSpacing: 10.w,
       mainAxisSpacing: 15.h,
       childAspectRatio: 1, // 宽高比1:1，正方形宫格
-      children: secondList.map((second) {
-        return GestureDetector(
-          onTap: () {
-            // 跳转到二级分类的商品列表页（结合go_router，传递分类ID）
-            context.go('/category/goods?firstId=${_categoryList[_selectedIndex].id}&secondId=${second.id}');
-          },
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              // 二级分类图标（圆角）
-              ClipRRect(
-                borderRadius: BorderRadius.circular(8.r),
-                child: Image.network(
-                  second.icon,
-                  width: 40.w,
-                  height: 40.h,
-                  fit: BoxFit.cover,
-                  errorBuilder: (context, error, stackTrace) {
-                    // 图标加载失败的兜底布局
-                    return Container(
-                      width: 40.w,
-                      height: 40.h,
-                      color: Colors.grey.shade200,
-                      alignment: Alignment.center,
-                      child: const Icon(Icons.category, color: Colors.grey),
-                    );
-                  },
+      children: secondList.map(
+        (second) {
+          return GestureDetector(
+            onTap: () {
+              // 跳转到二级分类的商品列表页（结合go_router，传递分类ID）
+              context.go('/category/goods?firstId=${_categoryList[_selectedIndex].id}&secondId=${second.id}');
+            },
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                // 二级分类图标（圆角）
+                ClipRRect(
+                  borderRadius: BorderRadius.circular(8.r),
+                  child: Image.network(
+                    second.icon,
+                    width: 40.w,
+                    height: 40.h,
+                    fit: BoxFit.cover,
+                    errorBuilder: (context, error, stackTrace) {
+                      // 图标加载失败的兜底布局
+                      return Container(
+                        width: 40.w,
+                        height: 40.h,
+                        color: Colors.grey.shade200,
+                        alignment: Alignment.center,
+                        child: const Icon(Icons.category, color: Colors.grey),
+                      );
+                    },
+                  ),
                 ),
-              ),
-              SizedBox(height: 5.h),
-              // 二级分类名称（单行省略）
-              Text(
-                second.name,
-                style: TextStyle(fontSize: 12.sp),
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
-              ),
-            ],
-          ),
-        );
-      }).toList(),
+                SizedBox(height: 5.h),
+                // 二级分类名称（单行省略）
+                Text(
+                  second.name,
+                  style: TextStyle(fontSize: 12.sp),
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                ),
+              ],
+            ),
+          );
+        },
+      ).toList(),
     );
   }
 
@@ -490,7 +492,7 @@ class _CategoryPageState extends State<CategoryPage> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          '热门推荐',
+          _categoryList[_selectedIndex].name,
           style: TextStyle(fontSize: 16.sp, fontWeight: FontWeight.bold),
         ),
         SizedBox(height: 10.h),
