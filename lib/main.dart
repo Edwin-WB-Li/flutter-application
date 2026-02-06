@@ -2,11 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
-
 import 'router.dart';
 
+import 'package:flutter_application/utils/log_utils.dart';
+
 void main() async {
-  // 必须添加：初始化Flutter绑定（异步操作前必备）
+  // 初始化日志工具
+  LogUtils.init();
+  // 初始化Flutter绑定（异步操作前必备）
   WidgetsFlutterBinding.ensureInitialized();
 
   // 加载.env文件（指定asset路径，兼容Web）

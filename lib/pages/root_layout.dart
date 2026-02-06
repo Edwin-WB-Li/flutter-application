@@ -4,7 +4,9 @@ import 'package:go_router/go_router.dart';
 // 底部 Tab 根布局（复用所有 Tab 页面的底部导航）
 class RootLayout extends StatefulWidget {
   final Widget child;
-  const RootLayout({super.key, required this.child});
+  final String? location;
+
+  const RootLayout({super.key, required this.child, this.location});
 
   @override
   State<RootLayout> createState() => _RootLayoutState();
@@ -24,6 +26,28 @@ class _RootLayoutState extends State<RootLayout> {
 
   // Tab 对应的路由地址
   final List<String> _tabRoutes = ['/home', '/category', '/cart', '/mine'];
+
+  @override
+  void initState() {
+    super.initState();
+    // 初始构建后根据路由同步选中索引（处理刷新场景）
+    WidgetsBinding.instance.addPostFrameCallback((_) => _syncIndexWithRoute());
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    // 当依赖（如 GoRouter）变化时再次同步
+    _syncIndexWithRoute();
+  }
+
+  void _syncIndexWithRoute() {
+    final String currentLocation = GoRouterState.of(context).uri.toString();
+    final int idx = _tabRoutes.indexWhere((route) => currentLocation == route || currentLocation.startsWith('$route/'));
+    if (idx != -1 && idx != _currentIndex) {
+      setState(() => _currentIndex = idx);
+    }
+  }
 
   @override
   Widget build(BuildContext context) {

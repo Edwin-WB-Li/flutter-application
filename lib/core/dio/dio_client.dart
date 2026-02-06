@@ -1,19 +1,24 @@
 import 'dart:convert';
 import 'package:dio/dio.dart';
+import 'package:flutter_application/models/user_model.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'dio_exception.dart'; // 后续创建自定义异常
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 
-// Dio网络请求封装类 - 全局单例
-class HttpManager {
-  // 全局单例实例
-  static final HttpManager _instance = HttpManager._internal();
-  factory HttpManager() => _instance;
+/// Dio 网络请求封装类 - 全局单例
+class DioClient {
+  /// 全局单例实例
+  static final DioClient _instance = DioClient._internal();
+  factory DioClient() => _instance;
   late Dio _dio;
+  // 统一Token存储键名
+  static const String _tokenKey = 'auth_token';
+  static const String _userInfoKey = 'userInfo';
   static String baseUrl = dotenv.env['API_BASE_URL'] ?? 'http://nest-api.weibin.xyz';
+
   // 私有构造方法 - 初始化Dio
-  HttpManager._internal() {
+  DioClient._internal() {
     // 1. 初始化Dio基础配置
     BaseOptions options = BaseOptions(
       // 从环境工具类获取基础地址（多环境自动切换）
@@ -42,7 +47,7 @@ class HttpManager {
   void _addInterceptors() {
     _dio.interceptors.add(InterceptorsWrapper(
         // 请求拦截：发送请求前执行（加Token、打印日志、修改请求头等）
-        onRequest: (RequestOptions options, RequestInterceptorHandler handler) {
+        onRequest: (RequestOptions options, RequestInterceptorHandler handler) async {
       // 开发环境打印请求日志
       // if (EnvUtils.isDev) {
       print('【请求】[${options.method}] ${options.uri}');
@@ -51,7 +56,7 @@ class HttpManager {
       // }
 
       // 自动添加Token（从本地存储获取，登录后才有）
-      _addTokenToHeader(options);
+      await _addTokenToHeader(options);
 
       handler.next(options); // 继续执行请求
     },
@@ -151,6 +156,75 @@ class HttpManager {
     }
   }
 
+  /// 解析单个对象模型
+  Future<T> getModel<T>(
+    String url, {
+    // 解析函数：接收Map，返回模型实例（json_serializable自动生成）
+    required T Function(Map<String, dynamic>) fromJson,
+    Map<String, dynamic>? params,
+    bool showLoading = true,
+    CancelToken? cancelToken,
+  }) async {
+    try {
+      if (showLoading) EasyLoading.show(status: 'Loading...');
+      final response = await _dio.get(
+        url,
+        queryParameters: params,
+        cancelToken: cancelToken,
+      );
+      // 核心：将响应数据转为模型对象
+      return fromJson(response.data as Map<String, dynamic>);
+    } finally {
+      if (showLoading) EasyLoading.dismiss();
+    }
+  }
+
+  /// 解析数组列表模型
+  Future<List<T>> getList<T>(
+    String url, {
+    required T Function(Map<String, dynamic>) fromJson,
+    Map<String, dynamic>? params,
+    bool showLoading = true,
+    CancelToken? cancelToken,
+  }) async {
+    try {
+      if (showLoading) EasyLoading.show(status: 'Loading...');
+      final response = await _dio.get(
+        url,
+        queryParameters: params,
+        cancelToken: cancelToken,
+      );
+      // 遍历数组，逐个解析为模型
+      final dataList = response.data as List;
+      return dataList.map((item) => fromJson(item as Map<String, dynamic>)).toList();
+    } finally {
+      if (showLoading) EasyLoading.dismiss();
+    }
+  }
+
+  /// POST请求（支持模型解析）
+  Future<T> postModel<T>(
+    String url, {
+    required T Function(Map<String, dynamic>) fromJson,
+    Map<String, dynamic>? data,
+    Map<String, dynamic>? params,
+    bool showLoading = true,
+    CancelToken? cancelToken,
+  }) async {
+    try {
+      if (showLoading) EasyLoading.show(status: 'Loading...');
+      final response = await _dio.post(
+        url,
+        data: data,
+        queryParameters: params,
+        cancelToken: cancelToken,
+      );
+      return fromJson(response.data as Map<String, dynamic>);
+    } finally {
+      if (showLoading) EasyLoading.dismiss();
+    }
+  }
+
   /// 封装GET请求
   /// [url]：接口路径（无需加baseUrl）
   /// [params]：请求参数（queryParameters）
@@ -170,8 +244,6 @@ class HttpManager {
         cancelToken: cancelToken,
       );
       return response.data as T;
-    } catch (e) {
-      rethrow; // 抛出自定义异常，让上层处理
     } finally {
       if (showLoading) EasyLoading.dismiss();
     }
@@ -206,21 +278,29 @@ class HttpManager {
     }
   }
 
-  /// 扩展：设置全局Token（登录后调用）
+  /// 设置全局Token（登录后调用）
   Future<void> setToken(String token) async {
     final prefs = await SharedPreferences.getInstance();
-    await prefs.setString('user_token', token);
+    await prefs.setString(_tokenKey, token);
   }
 
-  /// 扩展：移除Token（登出后调用）
+  ///移除Token（登出后调用）
   Future<void> removeToken() async {
     final prefs = await SharedPreferences.getInstance();
-    await prefs.remove('user_token');
+    await prefs.remove(_tokenKey);
   }
 
-  /// 扩展：获取Dio原生实例（特殊场景使用）
+  ///设置 userInfo
+  Future<void> setUserInfo(UserInfo userInfo) async {
+    final prefs = await SharedPreferences.getInstance();
+    // 将对象转为 JSON 字符串
+    final jsonString = jsonEncode(userInfo.toJson());
+    await prefs.setString(_userInfoKey, jsonString);
+  }
+
+  /// 获取Dio原生实例（特殊场景使用）
   Dio get dio => _dio;
 }
 
-// 全局快捷实例（上层调用更简洁）
-final httpManager = HttpManager();
+/// 全局快捷实例（上层调用更简洁）
+final dio = DioClient();
